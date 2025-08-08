@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Copy, Check } from 'lucide-react';
 
@@ -24,9 +24,16 @@ export function TextToBulletsForm() {
   const [error, setError] = useState<string | null>(null);
   const [truncated, setTruncated] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [cacheStats, setCacheStats] = useState<
-    BulletResponse['cacheStats'] | null
-  >(null);
+  const [cacheStats, setCacheStats] = useState<BulletResponse['cacheStats'] | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,17 +101,11 @@ export function TextToBulletsForm() {
             <span>
               {characterCount} / {maxCharacters} characters
             </span>
-            {truncated && (
-              <span className="text-orange-500">Text was truncated</span>
-            )}
+            {truncated && <span className="text-orange-500">Text was truncated</span>}
           </div>
         </div>
 
-        <Button
-          type="submit"
-          disabled={loading || !input.trim() || input.length < 10}
-          className="w-full"
-        >
+        <Button type="submit" disabled={loading || !input.trim() || input.length < 10} className="w-full">
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -117,21 +118,14 @@ export function TextToBulletsForm() {
       </form>
 
       {error && (
-        <div className="p-4 border border-destructive/50 rounded-md bg-destructive/10 text-destructive">
-          {error}
-        </div>
+        <div className="p-4 border border-destructive/50 rounded-md bg-destructive/10 text-destructive">{error}</div>
       )}
 
       {bullets.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Generated Bullets</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={copyToClipboard}
-              disabled={copied}
-            >
+            <Button variant="outline" size="sm" onClick={copyToClipboard} disabled={copied}>
               {copied ? (
                 <>
                   <Check className="mr-2 h-4 w-4" />
@@ -161,8 +155,7 @@ export function TextToBulletsForm() {
             <div className="p-3 border border-border rounded-md bg-muted/50">
               <p className="text-sm text-muted-foreground">
                 Cache: {cacheStats.enabled ? 'Enabled' : 'Disabled'}
-                {cacheStats.enabled &&
-                  ` (${cacheStats.size}/${cacheStats.maxSize} entries)`}
+                {cacheStats.enabled && ` (${cacheStats.size}/${cacheStats.maxSize} entries)`}
               </p>
             </div>
           )}
