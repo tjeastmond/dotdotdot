@@ -1,7 +1,7 @@
-import { processUserInput } from '../../../lib/processUserInput';
-import { generateBullets } from '../../../lib/callAI';
-import { rateLimit } from '../../../lib/rateLimit';
-import { cache } from '../../../lib/cache';
+import { processUserInput } from '@/lib/processUserInput';
+import { generateBullets } from '@/lib/callAI';
+import { rateLimit } from '@/lib/rateLimit';
+import { cache } from '@/lib/cache';
 
 export async function POST(req: Request) {
   // Rate limiting
@@ -9,10 +9,10 @@ export async function POST(req: Request) {
   const rateLimitResult = await rateLimit(ip);
 
   if (!rateLimitResult.success) {
-    return new Response(
-      JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
-      { status: 429, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   try {
@@ -46,8 +46,7 @@ export async function POST(req: Request) {
     }
 
     // Get cache stats for debugging (only in development)
-    const cacheStats =
-      process.env.NODE_ENV === 'development' ? cache.getStats() : null;
+    const cacheStats = process.env.NODE_ENV === 'development' ? cache.getStats() : null;
 
     return Response.json({
       bullets: result.bullets,
