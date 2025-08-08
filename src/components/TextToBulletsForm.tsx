@@ -26,10 +26,35 @@ export function TextToBulletsForm() {
   const [copied, setCopied] = useState(false);
   const [cacheStats, setCacheStats] = useState<BulletResponse['cacheStats'] | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [displayedBullets, setDisplayedBullets] = useState<string[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const isDev = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Streaming animation effect
+  useEffect(() => {
+    if (bullets.length === 0) {
+      setDisplayedBullets([]);
+      setIsStreaming(false);
+      return;
+    }
+
+    setIsStreaming(true);
+    setDisplayedBullets([]);
+
+    const streamBullets = async () => {
+      for (let i = 0; i < bullets.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 800)); // Slower delay between bullets
+        setDisplayedBullets(prev => [...prev, bullets[i]]);
+      }
+      setIsStreaming(false);
+    };
+
+    streamBullets();
+  }, [bullets]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
@@ -56,6 +81,7 @@ export function TextToBulletsForm() {
     setLoading(true);
     setError(null);
     setBullets([]);
+    setDisplayedBullets([]);
     setTruncated(false);
     setCacheStats(null);
 
@@ -85,12 +111,29 @@ export function TextToBulletsForm() {
   };
 
   const copyToClipboard = async () => {
-    if (bullets.length === 0) return;
+    if (displayedBullets.length === 0) return;
 
-    const text = bullets.map(bullet => `• ${bullet}`).join('\n');
+    const text = displayedBullets.map(bullet => `• ${bullet}`).join('\n');
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const replayAnimation = () => {
+    if (bullets.length === 0) return;
+
+    setIsStreaming(true);
+    setDisplayedBullets([]);
+
+    const streamBullets = async () => {
+      for (let i = 0; i < bullets.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setDisplayedBullets(prev => [...prev, bullets[i]]);
+      }
+      setIsStreaming(false);
+    };
+
+    streamBullets();
   };
 
   const characterCount = input.length;
@@ -133,33 +176,61 @@ export function TextToBulletsForm() {
         <div className="p-4 border border-destructive/50 rounded-md bg-destructive/10 text-destructive">{error}</div>
       )}
 
-      {bullets.length > 0 && (
+      {(displayedBullets.length > 0 || bullets.length > 0) && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Generated Bullets</h3>
-            <Button variant="outline" size="sm" onClick={copyToClipboard} disabled={copied}>
-              {copied ? (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="mr-2 h-4 w-4" />
-                  Copy
-                </>
+            <div className="flex gap-2">
+              {isDev && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={replayAnimation}
+                  disabled={isStreaming || bullets.length === 0}
+                >
+                  🎬 Replay
+                </Button>
               )}
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyToClipboard}
+                disabled={copied || isStreaming || displayedBullets.length === 0}
+              >
+                {copied ? (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           <div className="p-4 border border-border rounded-md bg-card">
             <ul className="space-y-2">
-              {bullets.map((bullet, index) => (
-                <li key={index} className="flex items-start">
+              {displayedBullets.map((bullet, index) => (
+                <li
+                  key={index}
+                  className="flex items-start animate-in fade-in slide-in-from-left-2 duration-500 ease-out"
+                >
                   <span className="mr-2 text-primary">•</span>
                   <span>{bullet}</span>
                 </li>
               ))}
+              {isStreaming && (
+                <li className="flex items-start animate-in fade-in duration-300">
+                  <span className="mr-2 text-primary">•</span>
+                  <span className="inline-flex">
+                    <span className="animate-pulse duration-1000">▋</span>
+                  </span>
+                </li>
+              )}
             </ul>
           </div>
 
