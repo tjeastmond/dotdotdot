@@ -31,8 +31,24 @@ export function TextToBulletsForm() {
     setMounted(true);
   }, []);
 
+  // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
-    return null;
+    return (
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="input" className="text-sm font-medium">
+              Enter your text
+            </label>
+            <div className="w-full min-h-[200px] p-4 border border-input rounded-md bg-background animate-pulse" />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>0 / 1000 characters</span>
+            </div>
+          </div>
+          <div className="w-full h-10 bg-primary/10 rounded-md animate-pulse" />
+        </div>
+      </div>
+    );
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
