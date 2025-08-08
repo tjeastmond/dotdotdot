@@ -2,8 +2,42 @@ import { processUserInput } from '@/lib/processUserInput';
 import { generateBullets } from '@/lib/callAI';
 import { rateLimit } from '@/lib/rateLimit';
 import { cache } from '@/lib/cache';
+import { validateCSRFToken } from '@/lib/csrf';
 
 export async function POST(req: Request) {
+  // Security checks
+  const origin = req.headers.get('origin');
+  const referer = req.headers.get('referer');
+  const contentType = req.headers.get('content-type');
+
+  // Check if request is from our domain or localhost (dev)
+  const allowedOrigins = [process.env.NEXT_PUBLIC_APP_URL, 'http://localhost:3000', 'http://localhost:3001'].filter(
+    Boolean
+  );
+
+  if (origin && !allowedOrigins.includes(origin)) {
+    return new Response(JSON.stringify({ error: 'Unauthorized origin' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Check referer header
+  if (referer && !allowedOrigins.some(allowed => allowed && referer.startsWith(allowed))) {
+    return new Response(JSON.stringify({ error: 'Invalid referer' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Check content type
+  if (!contentType?.includes('application/json')) {
+    return new Response(JSON.stringify({ error: 'Invalid content type' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   // Rate limiting
   const ip = req.headers.get('x-forwarded-for') || 'unknown';
   const rateLimitResult = await rateLimit(ip);
@@ -16,7 +50,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { input } = await req.json();
+    const { input, csrfToken } = await req.json();
+
+    // Validate CSRF token
+    if (!validateCSRFToken(csrfToken)) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired security token' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     if (!input || typeof input !== 'string') {
       return new Response(JSON.stringify({ error: 'Invalid input format' }), {

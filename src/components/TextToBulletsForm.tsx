@@ -28,11 +28,29 @@ export function TextToBulletsForm() {
   const [mounted, setMounted] = useState(false);
   const [displayedBullets, setDisplayedBullets] = useState<string[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [csrfToken, setCsrfToken] = useState<string>('');
   const isDev = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch CSRF token after component is mounted (client-side only)
+  useEffect(() => {
+    if (!mounted) return;
+
+    const fetchCSRFToken = async () => {
+      try {
+        const response = await fetch('/api/csrf-token');
+        const data = await response.json();
+        setCsrfToken(data.token);
+      } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
+      }
+    };
+
+    fetchCSRFToken();
+  }, [mounted]);
 
   // Streaming animation effect
   useEffect(() => {
@@ -76,7 +94,7 @@ export function TextToBulletsForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || !csrfToken) return;
 
     setLoading(true);
     setError(null);
@@ -91,7 +109,7 @@ export function TextToBulletsForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ input: input.trim() }),
+        body: JSON.stringify({ input: input.trim(), csrfToken }),
       });
 
       const data: BulletResponse = await response.json();
@@ -160,7 +178,7 @@ export function TextToBulletsForm() {
           </div>
         </div>
 
-        <Button type="submit" disabled={loading || !input.trim() || input.length < 10} className="w-full">
+        <Button type="submit" disabled={loading || !input.trim() || input.length < 10 || !csrfToken} className="w-full">
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -1,9 +1,7 @@
 // Stub rate limiting implementation - can be replaced with Redis later
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-export async function rateLimit(
-  ip: string
-): Promise<{ success: boolean; remaining: number }> {
+export async function rateLimit(ip: string): Promise<{ success: boolean; remaining: number }> {
   const key = `rate_limit:${ip}`;
   const limit = 10; // requests per minute
   const window = 60 * 1000; // 60 seconds in milliseconds

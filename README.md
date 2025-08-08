@@ -67,6 +67,7 @@ pnpm test
 ```
 
 The cache implementation includes comprehensive tests covering:
+
 - Cache enable/disable functionality
 - TTL expiration
 - Size management
@@ -128,8 +129,8 @@ The `MemoryCache` class provides:
 
 ```typescript
 // Test cache hit
-const result1 = await generateBullets("test input");
-const result2 = await generateBullets("test input"); // Should be cached
+const result1 = await generateBullets('test input');
+const result2 = await generateBullets('test input'); // Should be cached
 
 expect(result1.bullets).toEqual(result2.bullets);
 ```
