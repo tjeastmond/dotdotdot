@@ -2,6 +2,11 @@
   "name": "dotdotdot",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "TJ Eastmond",
+    "email": "tj.eastmond@gmail.com",
+    "url": "https://tj.eastmond.com"
+  },
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
