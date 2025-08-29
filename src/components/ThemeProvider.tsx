@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -13,7 +13,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system');
+  const [theme, setTheme] = useState<Theme>('dark');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -24,6 +24,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     if (savedTheme) {
       setTheme(savedTheme);
+    } else {
+      // First time visitor - use system theme but don't save it
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      setTheme(systemTheme);
+      // Don't save to localStorage yet - let user make their first choice
     }
   }, []);
 
@@ -31,36 +36,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
 
     const root = document.documentElement;
+    setResolvedTheme(theme);
+    root.className = theme;
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      setResolvedTheme(systemTheme);
-      root.className = systemTheme;
-    } else {
-      setResolvedTheme(theme);
-      root.className = theme;
+    // Save theme preference only if user has explicitly chosen one
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme || theme !== 'dark') {
+      localStorage.setItem('theme', theme);
     }
-
-    // Save theme preference
-    localStorage.setItem('theme', theme);
-  }, [theme, mounted]);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (theme === 'system') {
-        const newTheme = e.matches ? 'dark' : 'light';
-        setResolvedTheme(newTheme);
-        document.documentElement.className = newTheme;
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme, mounted]);
 
   // Always provide the context, even during initial render
