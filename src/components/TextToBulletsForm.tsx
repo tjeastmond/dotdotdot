@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from './ui/textarea';
-import { Loader2, Copy, Check } from 'lucide-react';
+import { Loader2, Copy, Check, RotateCcw } from 'lucide-react';
 
 interface BulletResponse {
   bullets: string[];
@@ -56,6 +56,7 @@ function BulletList({
   onCopy,
   copied,
   isDev,
+  cacheStats,
 }: {
   bullets: string[];
   isStreaming: boolean;
@@ -63,18 +64,32 @@ function BulletList({
   onCopy: () => void;
   copied: boolean;
   isDev: boolean;
+  cacheStats: BulletResponse['cacheStats'] | null;
 }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Generated Bullets</h3>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {cacheStats && (
+            <span className="text-sm text-muted-foreground mr-2">
+              Cache: {cacheStats.enabled ? 'Enabled' : 'Disabled'}
+              {cacheStats.size > 0 && ` (${cacheStats.size}/${cacheStats.maxSize} entries)`}
+            </span>
+          )}
           {isDev && (
             <Button variant="secondary" size="sm" onClick={onReplay} disabled={isStreaming || bullets.length === 0}>
-              🎬 Replay
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Replay
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={onCopy} disabled={copied || isStreaming || bullets.length === 0}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCopy}
+            disabled={copied || isStreaming || bullets.length === 0}
+            className="w-20"
+          >
             {copied ? (
               <>
                 <Check className="mr-2 h-4 w-4" />
@@ -108,20 +123,6 @@ function BulletList({
           )}
         </ul>
       </div>
-    </div>
-  );
-}
-
-// Cache stats component
-function CacheStats({ cacheStats }: { cacheStats: BulletResponse['cacheStats'] | null }) {
-  if (!cacheStats) return null;
-
-  return (
-    <div className="p-3 border border-border rounded-md bg-muted/50">
-      <p className="text-sm text-muted-foreground">
-        Cache: {cacheStats.enabled ? 'Enabled' : 'Disabled'}
-        {cacheStats.enabled && ` (${cacheStats.size}/${cacheStats.maxSize} entries)`}
-      </p>
     </div>
   );
 }
@@ -323,8 +324,8 @@ export function TextToBulletsForm() {
             onCopy={copyToClipboard}
             copied={copied}
             isDev={isDev}
+            cacheStats={cacheStats}
           />
-          <CacheStats cacheStats={cacheStats} />
         </div>
       )}
 

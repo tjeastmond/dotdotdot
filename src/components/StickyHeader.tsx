@@ -22,7 +22,7 @@ export function StickyHeader() {
       }`}
     >
       <div className="relative">
-        <div className="container mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-2">
@@ -34,25 +34,9 @@ export function StickyHeader() {
               </span>
             </div>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-foreground/80 hover:text-foreground transition-colors duration-200">
-                Features
-              </a>
-              <a href="#about" className="text-foreground/80 hover:text-foreground transition-colors duration-200">
-                About
-              </a>
-              <a href="#contact" className="text-foreground/80 hover:text-foreground transition-colors duration-200">
-                Contact
-              </a>
-            </nav>
-
-            {/* Right side - Theme toggle and CTA */}
-            <div className="flex items-center space-x-4">
+            {/* Right side - Theme toggle */}
+            <div className="flex items-center">
               <ThemeToggle />
-              <button className="hidden md:inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                Get Started
-              </button>
             </div>
           </div>
         </div>
