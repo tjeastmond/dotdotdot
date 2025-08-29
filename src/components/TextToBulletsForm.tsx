@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from './ui/textarea';
-import { Loader2, Copy, Check, RotateCcw } from 'lucide-react';
+import { Loader2, Copy, Check, RotateCcw, Bot } from 'lucide-react';
 
 interface BulletResponse {
   bullets: string[];
@@ -269,7 +269,7 @@ export function TextToBulletsForm() {
       {/* Input Section */}
       <div className="bg-card border border-border/50 rounded-2xl p-8 shadow-xl">
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Enter your text</h3>
+          <h3 className="text-xl font-semibold mb-2">Paste Your Text</h3>
           <p className="text-muted-foreground">
             Paste any text content and we'll transform it into clear, actionable bullet points
           </p>
@@ -343,14 +343,7 @@ export function TextToBulletsForm() {
 
         <div className="bg-card border border-border/50 rounded-2xl p-6 hover:border-border/70 transition-colors duration-200">
           <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <Bot className="w-6 h-6 text-green-500" />
           </div>
           <h4 className="font-semibold mb-2">AI-Powered</h4>
           <p className="text-sm text-muted-foreground">Advanced AI extracts the most important insights</p>
