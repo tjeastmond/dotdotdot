@@ -4,7 +4,42 @@
 
 /* CSS-only theme detection to prevent flash */
 @layer base {
+  /* Default to dark theme to prevent flash */
   :root {
+    color-scheme: dark;
+  }
+  
+
+
+  /* Apply dark theme by default to prevent flash */
+  :root {
+    --background: 220 13% 4%;
+    --foreground: 0 0% 98%;
+    --card: 220 13% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 220 13% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 16%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 220 13% 18%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 220 13% 20%;
+    --accent-foreground: 0 0% 90%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 20%;
+    --input: 220 13% 16%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+  .light {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -31,38 +66,15 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
-
-  .dark {
-    --background: 220 13% 4%;
-    --foreground: 0 0% 98%;
-    --card: 220 13% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 220 13% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 13% 16%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 220 13% 18%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 220 13% 20%;
-    --accent-foreground: 0 0% 90%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 20%;
-    --input: 220 13% 16%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
 }
 
-/* Prevent theme flash by not applying system theme until JavaScript loads */
-/* This ensures the server-rendered theme matches the client initial state */
+/* Prevent theme flash by applying dark theme by default */
 @layer base {
+  /* Apply dark theme by default to prevent flash */
+  html {
+    color-scheme: dark;
+  }
+  
   * {
     @apply border-border;
   }

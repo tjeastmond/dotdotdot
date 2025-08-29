@@ -31,15 +31,15 @@ function applyTheme(theme: Theme) {
   if (typeof document === 'undefined') return;
 
   const resolvedTheme = getResolvedTheme(theme);
-  const root = document.documentElement;
+  const html = document.documentElement;
 
   // Remove existing theme classes
-  root.classList.remove('light', 'dark');
+  html.classList.remove('light', 'dark');
   // Add new theme class
-  root.classList.add(resolvedTheme);
+  html.classList.add(resolvedTheme);
 
   // Also set data attribute for CSS targeting
-  root.setAttribute('data-theme', resolvedTheme);
+  html.setAttribute('data-theme', resolvedTheme);
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -71,6 +71,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     setMounted(true);
   }, []);
+
+
 
   // Apply theme changes after initial mount
   useEffect(() => {
