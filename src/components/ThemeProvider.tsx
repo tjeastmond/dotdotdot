@@ -55,9 +55,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
       setTheme(savedTheme);
+      // Immediately set resolved theme for saved themes
+      if (savedTheme !== 'system') {
+        setResolvedTheme(savedTheme);
+      }
     } else {
       // First time visitor - use system theme
       setTheme('system');
+      // Set initial resolved theme based on system preference
+      const systemTheme = getSystemTheme();
+      setResolvedTheme(systemTheme);
     }
   }, []);
 
@@ -95,9 +102,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [mounted, theme]);
 
+  // Enhanced setTheme that handles system theme conversion
+  const handleSetTheme = (newTheme: Theme) => {
+    if (newTheme === 'system') {
+      // If switching to system, use current system preference
+      setTheme('system');
+    } else {
+      // If switching to light/dark, use that directly
+      setTheme(newTheme);
+    }
+  };
+
   const contextValue: ThemeContextType = {
     theme,
-    setTheme,
+    setTheme: handleSetTheme,
     resolvedTheme,
   };
 

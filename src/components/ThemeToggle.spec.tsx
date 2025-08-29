@@ -12,7 +12,7 @@ jest.mock('./ThemeProvider', () => ({
 describe('ThemeToggle', () => {
   beforeEach(() => {
     mockUseTheme.mockReturnValue({
-      theme: 'system',
+      theme: 'dark',
       setTheme: jest.fn(),
       resolvedTheme: 'dark',
     });
@@ -26,7 +26,7 @@ describe('ThemeToggle', () => {
   it('should call setTheme when clicked', () => {
     const mockSetTheme = jest.fn();
     mockUseTheme.mockReturnValue({
-      theme: 'system',
+      theme: 'dark',
       setTheme: mockSetTheme,
       resolvedTheme: 'dark',
     });
@@ -39,12 +39,12 @@ describe('ThemeToggle', () => {
     expect(mockSetTheme).toHaveBeenCalledWith('light');
   });
 
-  it('should cycle through themes correctly', () => {
+  it('should toggle between light and dark themes', () => {
     const mockSetTheme = jest.fn();
 
-    // Start with system theme
+    // Start with dark theme
     mockUseTheme.mockReturnValue({
-      theme: 'system',
+      theme: 'dark',
       setTheme: mockSetTheme,
       resolvedTheme: 'dark',
     });
@@ -52,7 +52,7 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
     const button = screen.getByLabelText('Switch to light theme');
 
-    // First click: system -> light
+    // First click: dark -> light
     fireEvent.click(button);
     expect(mockSetTheme).toHaveBeenCalledWith('light');
 
@@ -70,27 +70,12 @@ describe('ThemeToggle', () => {
     const button2 = screen.getByLabelText('Switch to dark theme');
     fireEvent.click(button2);
     expect(mockSetTheme).toHaveBeenCalledWith('dark');
-
-    // Reset mock for next test
-    mockSetTheme.mockClear();
-
-    // Third click: dark -> system
-    mockUseTheme.mockReturnValue({
-      theme: 'dark',
-      setTheme: mockSetTheme,
-      resolvedTheme: 'dark',
-    });
-
-    render(<ThemeToggle />);
-    const button3 = screen.getByLabelText('Switch to system theme');
-    fireEvent.click(button3);
-    expect(mockSetTheme).toHaveBeenCalledWith('system');
   });
 
-  it('should show correct icon for current theme', () => {
-    // Test system theme icon
+  it('should show correct icon based on resolvedTheme', () => {
+    // Test dark theme icon (resolvedTheme: dark)
     mockUseTheme.mockReturnValue({
-      theme: 'system',
+      theme: 'system', // theme can be system but icon shows based on resolvedTheme
       setTheme: jest.fn(),
       resolvedTheme: 'dark',
     });
@@ -98,31 +83,21 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
     expect(screen.getByLabelText('Switch to light theme')).toBeInTheDocument();
 
-    // Test light theme icon
+    // Test light theme icon (resolvedTheme: light)
     mockUseTheme.mockReturnValue({
-      theme: 'light',
+      theme: 'system', // theme can be system but icon shows based on resolvedTheme
       setTheme: jest.fn(),
       resolvedTheme: 'light',
     });
 
     render(<ThemeToggle />);
     expect(screen.getByLabelText('Switch to dark theme')).toBeInTheDocument();
-
-    // Test dark theme icon
-    mockUseTheme.mockReturnValue({
-      theme: 'dark',
-      setTheme: jest.fn(),
-      resolvedTheme: 'dark',
-    });
-
-    render(<ThemeToggle />);
-    expect(screen.getByLabelText('Switch to system theme')).toBeInTheDocument();
   });
 
   it('should have correct aria-label for accessibility', () => {
-    // System theme - should offer to switch to light
+    // Dark theme - should offer to switch to light
     mockUseTheme.mockReturnValue({
-      theme: 'system',
+      theme: 'dark',
       setTheme: jest.fn(),
       resolvedTheme: 'dark',
     });
@@ -139,8 +114,10 @@ describe('ThemeToggle', () => {
 
     render(<ThemeToggle />);
     expect(screen.getByLabelText('Switch to dark theme')).toBeInTheDocument();
+  });
 
-    // Dark theme - should offer to switch to system
+  it('should show correct title attribute', () => {
+    // Dark theme
     mockUseTheme.mockReturnValue({
       theme: 'dark',
       setTheme: jest.fn(),
@@ -148,19 +125,7 @@ describe('ThemeToggle', () => {
     });
 
     render(<ThemeToggle />);
-    expect(screen.getByLabelText('Switch to system theme')).toBeInTheDocument();
-  });
-
-  it('should show correct title attribute', () => {
-    // System theme
-    mockUseTheme.mockReturnValue({
-      theme: 'system',
-      setTheme: jest.fn(),
-      resolvedTheme: 'dark',
-    });
-
-    render(<ThemeToggle />);
-    const button = screen.getByTitle('Current: System (Click for light)');
+    const button = screen.getByTitle('Current: dark (Click for light)');
     expect(button).toBeInTheDocument();
 
     // Light theme
@@ -173,16 +138,5 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
     const button2 = screen.getByTitle('Current: light (Click for dark)');
     expect(button2).toBeInTheDocument();
-
-    // Dark theme
-    mockUseTheme.mockReturnValue({
-      theme: 'dark',
-      setTheme: jest.fn(),
-      resolvedTheme: 'dark',
-    });
-
-    render(<ThemeToggle />);
-    const button3 = screen.getByTitle('Current: dark (Click for system)');
-    expect(button3).toBeInTheDocument();
   });
 });

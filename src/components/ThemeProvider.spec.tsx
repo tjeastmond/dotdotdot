@@ -37,15 +37,19 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock document.documentElement
+// Mock document.documentElement with proper jest mocks
+const mockRemove = jest.fn();
+const mockAdd = jest.fn();
+const mockSetAttribute = jest.fn();
+
 Object.defineProperty(document, 'documentElement', {
   value: {
     className: '',
     classList: {
-      remove: jest.fn(),
-      add: jest.fn(),
+      remove: mockRemove,
+      add: mockAdd,
     },
-    setAttribute: jest.fn(),
+    setAttribute: mockSetAttribute,
   },
   writable: true,
 });
@@ -69,13 +73,9 @@ describe('ThemeProvider', () => {
     localStorageMock.clear();
     document.documentElement.className = '';
     // Reset mocks
-    if (document.documentElement.classList) {
-      document.documentElement.classList.remove.mockClear();
-      document.documentElement.classList.add.mockClear();
-    }
-    if (document.documentElement.setAttribute) {
-      document.documentElement.setAttribute.mockClear();
-    }
+    mockRemove.mockClear();
+    mockAdd.mockClear();
+    mockSetAttribute.mockClear();
   });
 
   it('should use system theme for first-time visitors', () => {
@@ -167,9 +167,9 @@ describe('ThemeProvider', () => {
     });
 
     // Check that theme classes are applied
-    expect(document.documentElement.classList.remove).toHaveBeenCalledWith('light', 'dark');
-    expect(document.documentElement.classList.add).toHaveBeenCalledWith('light');
-    expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-theme', 'light');
+    expect(mockRemove).toHaveBeenCalledWith('light', 'dark');
+    expect(mockAdd).toHaveBeenCalledWith('light');
+    expect(mockSetAttribute).toHaveBeenCalledWith('data-theme', 'light');
   });
 
   it('should handle invalid saved themes gracefully', () => {
