@@ -26,7 +26,7 @@ export function ThemeToggle() {
   if (!mounted) {
     // Render a placeholder with the same dimensions to prevent layout shift
     return (
-      <Button variant="outline" size="icon" className="w-9 h-9">
+      <Button variant="outline" size="icon" className="w-9 h-9 rounded-xl">
         <div className="w-4 h-4" />
       </Button>
     );
@@ -37,7 +37,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={handleToggle}
-      className="w-9 h-9"
+      className="w-9 h-9 rounded-xl"
       aria-label={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
       title={`Current: ${theme} (Click for ${resolvedTheme === 'light' ? 'dark' : 'light'})`}
     >

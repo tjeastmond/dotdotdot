@@ -290,7 +290,7 @@ export function TextToBulletsForm() {
           <Button
             type="submit"
             disabled={loading || !input.trim() || input.length < 10 || !csrfToken || csrfLoading}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {csrfLoading ? (
               <div className="flex items-center space-x-2">
@@ -331,8 +331,8 @@ export function TextToBulletsForm() {
 
       {/* Features Section */}
       <div className="grid md:grid-cols-3 gap-6 mt-12">
-        <div className="bg-card border border-border/50 rounded-xl p-6 hover:border-border/70 transition-colors duration-200">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center mb-4">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 hover:border-border/70 transition-colors duration-200">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -341,8 +341,8 @@ export function TextToBulletsForm() {
           <p className="text-sm text-muted-foreground">Get instant bullet points in seconds, not minutes</p>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-6 hover:border-border/70 transition-colors duration-200">
-          <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-lg flex items-center justify-center mb-4">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 hover:border-border/70 transition-colors duration-200">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -356,8 +356,8 @@ export function TextToBulletsForm() {
           <p className="text-sm text-muted-foreground">Advanced AI extracts the most important insights</p>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-6 hover:border-border/70 transition-colors duration-200">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-lg flex items-center justify-center mb-4">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 hover:border-border/70 transition-colors duration-200">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-full flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
