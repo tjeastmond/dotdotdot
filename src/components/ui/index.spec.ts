@@ -6,7 +6,7 @@
  */
 
 // Import all component tests
-import './button.test';
+import './button.spec';
 
 // Re-export components for easier testing imports
 export { Button, buttonVariants } from './button';
@@ -33,7 +33,7 @@ describe('UI Components Test Coverage', () => {
   it('should have test files for all UI components', () => {
     // This test ensures we don't forget to test new UI components
     const componentFiles = ['button'];
-    const testFiles = ['button.test'];
+    const testFiles = ['button.spec'];
 
     componentFiles.forEach(component => {
       const hasTest = testFiles.some(test => test.includes(component));
