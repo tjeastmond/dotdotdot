@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeToggle } from './ThemeToggle';
-import { ThemeProvider } from './ThemeProvider';
 
 // Mock the useTheme hook
 const mockUseTheme = jest.fn();
@@ -21,29 +20,10 @@ describe('ThemeToggle', () => {
 
   it('should render theme toggle button', () => {
     render(<ThemeToggle />);
-    expect(screen.getByLabelText('Toggle theme')).toBeInTheDocument();
+    expect(screen.getByLabelText('Switch to light theme')).toBeInTheDocument();
   });
 
-  it('should show dropdown when clicked', () => {
-    render(<ThemeToggle />);
-    const button = screen.getByLabelText('Toggle theme');
-    
-    fireEvent.click(button);
-    
-    expect(screen.getByText('Light')).toBeInTheDocument();
-    expect(screen.getByText('Dark')).toBeInTheDocument();
-  });
-
-  it('should not show system option', () => {
-    render(<ThemeToggle />);
-    const button = screen.getByLabelText('Toggle theme');
-    
-    fireEvent.click(button);
-    
-    expect(screen.queryByText('System')).not.toBeInTheDocument();
-  });
-
-  it('should call setTheme when theme option is clicked', () => {
+  it('should call setTheme when clicked', () => {
     const mockSetTheme = jest.fn();
     mockUseTheme.mockReturnValue({
       theme: 'dark',
@@ -52,31 +32,25 @@ describe('ThemeToggle', () => {
     });
 
     render(<ThemeToggle />);
-    const button = screen.getByLabelText('Toggle theme');
+    const button = screen.getByLabelText('Switch to light theme');
     
     fireEvent.click(button);
-    fireEvent.click(screen.getByText('Light'));
     
     expect(mockSetTheme).toHaveBeenCalledWith('light');
   });
 
-  it('should close dropdown when backdrop is clicked', () => {
-    render(<ThemeToggle />);
-    const button = screen.getByLabelText('Toggle theme');
-    
-    fireEvent.click(button);
-    expect(screen.getByText('Light')).toBeInTheDocument();
-    
-    // Click backdrop (first div with fixed inset-0)
-    const backdrop = document.querySelector('div[class*="fixed inset-0"]');
-    if (backdrop) {
-      fireEvent.click(backdrop);
-    }
-    
-    expect(screen.queryByText('Light')).not.toBeInTheDocument();
-  });
+  it('should show correct icon for current theme', () => {
+    // Test dark theme icon
+    mockUseTheme.mockReturnValue({
+      theme: 'dark',
+      setTheme: jest.fn(),
+      resolvedTheme: 'dark',
+    });
 
-  it('should show current theme icon', () => {
+    render(<ThemeToggle />);
+    expect(screen.getByLabelText('Switch to light theme')).toBeInTheDocument();
+
+    // Test light theme icon
     mockUseTheme.mockReturnValue({
       theme: 'light',
       setTheme: jest.fn(),
@@ -84,9 +58,28 @@ describe('ThemeToggle', () => {
     });
 
     render(<ThemeToggle />);
-    const button = screen.getByLabelText('Toggle theme');
-    
-    // Should show sun icon for light theme
-    expect(button.querySelector('svg')).toBeInTheDocument();
+    expect(screen.getByLabelText('Switch to dark theme')).toBeInTheDocument();
+  });
+
+  it('should have correct aria-label for accessibility', () => {
+    // Dark theme - should offer to switch to light
+    mockUseTheme.mockReturnValue({
+      theme: 'dark',
+      setTheme: jest.fn(),
+      resolvedTheme: 'dark',
+    });
+
+    render(<ThemeToggle />);
+    expect(screen.getByLabelText('Switch to light theme')).toBeInTheDocument();
+
+    // Light theme - should offer to switch to dark
+    mockUseTheme.mockReturnValue({
+      theme: 'light',
+      setTheme: jest.fn(),
+      resolvedTheme: 'light',
+    });
+
+    render(<ThemeToggle />);
+    expect(screen.getByLabelText('Switch to dark theme')).toBeInTheDocument();
   });
 });
