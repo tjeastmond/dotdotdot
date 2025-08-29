@@ -1,24 +1,27 @@
 import { TextToBulletsForm } from '@/components/TextToBulletsForm';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { StickyHeader } from '@/components/StickyHeader';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <header className="text-center mb-12 relative">
-            <div className="absolute top-0 right-0">
-              <ThemeToggle />
-            </div>
-            <h1 className="text-4xl font-bold mb-4">DotDotDot</h1>
-            <p className="text-xl text-muted-foreground">
-              Transform walls of text into clean, concise bullet points using AI
-            </p>
-          </header>
+    <>
+      <StickyHeader />
+      <main className="min-h-screen bg-background pt-24">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <header className="text-center mb-12">
+              <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+                DotDotDot
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Transform walls of text into clean, concise bullet points using AI. Get instant insights and actionable
+                intelligence from your content.
+              </p>
+            </header>
 
-          <TextToBulletsForm />
+            <TextToBulletsForm />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

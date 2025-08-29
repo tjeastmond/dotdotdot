@@ -33,26 +33,26 @@
   }
 
   .dark {
-    --background: 0 0% 15%;
-    --foreground: 0 0% 90%;
-    --card: 0 0% 20%;
-    --card-foreground: 0 0% 90%;
-    --popover: 0 0% 20%;
-    --popover-foreground: 0 0% 90%;
-    --primary: 142 76% 36%;
+    --background: 220 13% 4%;
+    --foreground: 0 0% 98%;
+    --card: 220 13% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 220 13% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 25%;
+    --secondary: 220 13% 8%;
     --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 0% 25%;
+    --muted: 220 13% 10%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 220 13% 12%;
     --accent-foreground: 0 0% 90%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 25%;
-    --ring: 142 76% 36%;
-    --chart-1: 220 70% 50%;
+    --border: 220 13% 15%;
+    --input: 220 13% 10%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -60,41 +60,29 @@
   }
 }
 
-/* CSS-only theme detection using media queries */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: 0 0% 15%;
-    --foreground: 0 0% 90%;
-    --card: 0 0% 20%;
-    --card-foreground: 0 0% 90%;
-    --popover: 0 0% 20%;
-    --popover-foreground: 0 0% 90%;
-    --primary: 142 76% 36%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 25%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 0% 25%;
-    --accent-foreground: 0 0% 90%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 25%;
-    --ring: 142 76% 36%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
-
+/* Prevent theme flash by not applying system theme until JavaScript loads */
+/* This ensures the server-rendered theme matches the client initial state */
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Backdrop blur utilities for sticky header */
+@layer utilities {
+  .backdrop-blur-header {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .backdrop-blur-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: hsl(var(--background) / 0.8);
+    border-bottom: 1px solid hsl(var(--border) / 0.3);
   }
 }

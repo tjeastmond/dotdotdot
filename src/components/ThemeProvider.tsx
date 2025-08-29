@@ -47,28 +47,32 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
 
-  // Initialize theme on mount
+  // Initialize theme immediately on mount to prevent flash
   useEffect(() => {
-    setMounted(true);
-
     // Get saved theme from localStorage
     const savedTheme = localStorage.getItem('theme') as Theme | null;
+    let initialTheme: Theme = 'system';
+
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
-      setTheme(savedTheme);
-      // Immediately set resolved theme for saved themes
-      if (savedTheme !== 'system') {
-        setResolvedTheme(savedTheme);
-      }
-    } else {
-      // First time visitor - use system theme
-      setTheme('system');
-      // Set initial resolved theme based on system preference
+      initialTheme = savedTheme;
+    }
+
+    setTheme(initialTheme);
+
+    // Immediately apply the theme to prevent flash
+    if (initialTheme === 'system') {
       const systemTheme = getSystemTheme();
       setResolvedTheme(systemTheme);
+      applyTheme(initialTheme);
+    } else {
+      setResolvedTheme(initialTheme);
+      applyTheme(initialTheme);
     }
+
+    setMounted(true);
   }, []);
 
-  // Apply theme changes
+  // Apply theme changes after initial mount
   useEffect(() => {
     if (!mounted) return;
 
@@ -94,13 +98,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme, mounted]);
-
-  // Apply initial theme immediately to prevent flash
-  useEffect(() => {
-    if (mounted) {
-      applyTheme(theme);
-    }
-  }, [mounted, theme]);
 
   // Enhanced setTheme that handles system theme conversion
   const handleSetTheme = (newTheme: Theme) => {
