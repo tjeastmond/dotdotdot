@@ -69,10 +69,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       applyTheme(initialTheme);
     }
 
+
+
     setMounted(true);
   }, []);
-
-
 
   // Apply theme changes after initial mount
   useEffect(() => {
