@@ -3,6 +3,7 @@ import { generateBullets } from '@/lib/callAI';
 import { rateLimit } from '@/lib/rateLimit';
 import { cache } from '@/lib/cache';
 import { validateCSRFToken } from '@/lib/csrf';
+import { checkInputSecurity, logSecurityEvent, shouldRateLimitByThreats } from '@/lib/security';
 
 export const runtime = 'edge';
 
@@ -69,7 +70,35 @@ export async function POST(req: Request) {
       });
     }
 
-    const { cleaned, tooLong, originalLength } = processUserInput(input);
+    // Comprehensive security check
+    const securityResult = checkInputSecurity(input);
+    
+    // Log security events
+    if (securityResult.threats.length > 0) {
+      logSecurityEvent('threat', `Threats detected: ${securityResult.threats.join(', ')}`, input, ip);
+    }
+    
+    if (securityResult.warnings.length > 0) {
+      logSecurityEvent('warning', `Warnings: ${securityResult.warnings.join(', ')}`, input, ip);
+    }
+
+    // Block requests with high-risk threats
+    if (!securityResult.isSafe) {
+      // Additional rate limiting for malicious requests
+      if (shouldRateLimitByThreats(securityResult.threats)) {
+        logSecurityEvent('blocked', 'Request blocked due to high-risk threats', input, ip);
+        return new Response(JSON.stringify({ 
+          error: 'Request blocked due to security concerns',
+          details: 'Your input contains potentially malicious content that has been blocked.'
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Use sanitized input for processing
+    const { cleaned, tooLong, originalLength } = processUserInput(securityResult.sanitizedInput);
 
     if (!cleaned || cleaned.length < 10) {
       return new Response(
@@ -98,6 +127,11 @@ export async function POST(req: Request) {
       originalLength,
       processedLength: cleaned.length,
       cacheStats, // Only included in development
+      securityInfo: process.env.NODE_ENV === 'development' ? {
+        threats: securityResult.threats,
+        warnings: securityResult.warnings,
+        sanitized: securityResult.sanitizedInput !== input
+      } : undefined
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
