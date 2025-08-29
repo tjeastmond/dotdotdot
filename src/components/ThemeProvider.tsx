@@ -69,7 +69,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       applyTheme(initialTheme);
     }
 
-
+    // Add theme-loaded class to remove forced CSS styles
+    document.documentElement.classList.add('theme-loaded');
 
     setMounted(true);
   }, []);
