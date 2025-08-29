@@ -41,6 +41,11 @@ Object.defineProperty(window, 'matchMedia', {
 Object.defineProperty(document, 'documentElement', {
   value: {
     className: '',
+    classList: {
+      remove: jest.fn(),
+      add: jest.fn(),
+    },
+    setAttribute: jest.fn(),
   },
   writable: true,
 });
@@ -54,6 +59,7 @@ function TestComponent() {
       <div data-testid="resolved-theme">{resolvedTheme}</div>
       <button onClick={() => setTheme('light')}>Set Light</button>
       <button onClick={() => setTheme('dark')}>Set Dark</button>
+      <button onClick={() => setTheme('system')}>Set System</button>
     </div>
   );
 }
@@ -62,6 +68,14 @@ describe('ThemeProvider', () => {
   beforeEach(() => {
     localStorageMock.clear();
     document.documentElement.className = '';
+    // Reset mocks
+    if (document.documentElement.classList) {
+      document.documentElement.classList.remove.mockClear();
+      document.documentElement.classList.add.mockClear();
+    }
+    if (document.documentElement.setAttribute) {
+      document.documentElement.setAttribute.mockClear();
+    }
   });
 
   it('should use system theme for first-time visitors', () => {
@@ -71,8 +85,9 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
-    // Should default to system theme (dark in our mock)
-    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
+    // Should default to system theme
+    expect(screen.getByTestId('theme')).toHaveTextContent('system');
+    // Resolved theme should be dark (based on our mock)
     expect(screen.getByTestId('resolved-theme')).toHaveTextContent('dark');
   });
 
@@ -120,21 +135,53 @@ describe('ThemeProvider', () => {
     expect(localStorageMock.setItem).toHaveBeenCalledWith('theme', 'light');
   });
 
-  it('should handle system theme detection correctly', () => {
-    // Clear localStorage calls before this test
-    localStorageMock.setItem.mockClear();
-    
+  it('should handle system theme correctly', () => {
     render(
       <ThemeProvider>
         <TestComponent />
       </ThemeProvider>
     );
 
-    // The system theme should be detected and applied (could be light or dark)
-    const theme = screen.getByTestId('theme').textContent;
-    const resolvedTheme = screen.getByTestId('resolved-theme').textContent;
-    
-    expect(theme).toBe(resolvedTheme);
-    expect(['light', 'dark']).toContain(theme);
+    const systemButton = screen.getByText('Set System');
+    act(() => {
+      systemButton.click();
+    });
+
+    expect(screen.getByTestId('theme')).toHaveTextContent('system');
+    // Resolved theme should be dark (based on our mock)
+    expect(screen.getByTestId('resolved-theme')).toHaveTextContent('dark');
+  });
+
+  it('should apply theme classes to document element', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    );
+
+    // Wait for effects to run
+    act(() => {
+      // Trigger a theme change
+      const lightButton = screen.getByText('Set Light');
+      lightButton.click();
+    });
+
+    // Check that theme classes are applied
+    expect(document.documentElement.classList.remove).toHaveBeenCalledWith('light', 'dark');
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('light');
+    expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-theme', 'light');
+  });
+
+  it('should handle invalid saved themes gracefully', () => {
+    localStorageMock.getItem.mockReturnValue('invalid-theme');
+
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    );
+
+    // Should fallback to system theme
+    expect(screen.getByTestId('theme')).toHaveTextContent('system');
   });
 });
