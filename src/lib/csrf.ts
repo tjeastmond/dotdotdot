@@ -3,7 +3,7 @@ const CSRF_SECRET = process.env.CSRF_SECRET || 'dev-secret-change-in-production'
 // Convert string to ArrayBuffer for Web Crypto API
 function stringToArrayBuffer(str: string): ArrayBuffer {
   const encoder = new TextEncoder();
-  return encoder.encode(str);
+  return encoder.encode(str).buffer;
 }
 
 // Convert ArrayBuffer to hex string
