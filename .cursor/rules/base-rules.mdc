@@ -3,4 +3,9 @@ alwaysApply: true
 ---
 
 - ALWAYS write or update tests BEFORE writing code
-- Use Conventional Commits: https://www.conventionalcommits.org/en/v1.0.0/#specification
+- Whenever planning a project, ONLY plan for the immediate request. NO ADDITIONAL changes or fixes
+- If you find any bugs or issues while working on requests, add them to `.cursor/issues.md` as a new line item with format: "- [ ] Description of issue"
+- Save planning and researching markdown files we create in `.cursor/research/`
+- Keep code changes small, elegent, and concise
+- ALWAYS follow Conventional Commits when writing git commit messages: https://www.conventionalcommits.org/en/v1.0.0/#specification
+- When writing `git` commits ONLY write a subject line, NO DESCRIPTION OR BODY
