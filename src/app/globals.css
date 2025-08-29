@@ -8,7 +8,7 @@
   :root {
     color-scheme: dark;
   }
-  
+
   /* Apply dark theme by default to prevent flash */
   :root {
     --background: 220 13% 4%;
@@ -49,17 +49,7 @@
     color: hsl(var(--foreground));
   }
 
-  /* Force dark theme on all elements to prevent flash */
-  * {
-    background-color: hsl(var(--background)) !important;
-    color: hsl(var(--foreground)) !important;
-  }
 
-  /* Remove forced styles once theme is properly loaded */
-  .theme-loaded * {
-    background-color: initial !important;
-    color: initial !important;
-  }
 }
 
   .light {

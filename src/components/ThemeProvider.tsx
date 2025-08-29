@@ -46,6 +46,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
+  const [themeReady, setThemeReady] = useState(false);
 
   // Initialize theme immediately on mount to prevent flash
   useEffect(() => {
@@ -69,10 +70,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       applyTheme(initialTheme);
     }
 
-    // Add theme-loaded class to remove forced CSS styles
-    document.documentElement.classList.add('theme-loaded');
-
     setMounted(true);
+    setThemeReady(true);
   }, []);
 
   // Apply theme changes after initial mount
@@ -118,6 +117,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme: handleSetTheme,
     resolvedTheme,
   };
+
+  // Don't render children until theme is ready to prevent flash
+  if (!themeReady) {
+    return null;
+  }
 
   return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
