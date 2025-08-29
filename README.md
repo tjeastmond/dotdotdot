@@ -15,23 +15,27 @@
 ## 🚀 Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd dotdotdot.dev
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    # Add your API keys and configuration
    ```
 
 4. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -114,6 +118,7 @@ src/
 ## 🔄 Cache Implementation
 
 ### Features
+
 - **Local Memory Storage**: Fast in-memory Map for caching
 - **TTL Support**: Automatic expiration of cached entries
 - **Size Management**: Automatic cleanup when cache reaches max size
@@ -121,6 +126,7 @@ src/
 - **Hash-based Keys**: Efficient key generation using simple hash function
 
 ### Usage
+
 The cache automatically stores AI responses to avoid duplicate API calls:
 
 ```typescript
@@ -129,6 +135,7 @@ The cache automatically stores AI responses to avoid duplicate API calls:
 ```
 
 ### Cache Statistics
+
 In development mode, the API returns cache statistics:
 
 ```json
@@ -198,8 +205,6 @@ npm run format:check # Check code formatting
 - **Modern Browsers**: Chrome, Firefox, Safari, Edge (latest versions)
 - **Mobile Responsive**: Works on all device sizes
 - **Progressive Enhancement**: Core functionality works without JavaScript
-
-
 
 ## 📄 License
 

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <StickyHeader />
-      <main className="min-h-screen bg-background pt-24">
+      <main className="min-h-screen pt-24">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <header className="text-center mb-12">

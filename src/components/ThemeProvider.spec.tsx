@@ -78,16 +78,16 @@ describe('ThemeProvider', () => {
     mockSetAttribute.mockClear();
   });
 
-  it('should use system theme for first-time visitors', () => {
+  it('should use dark theme for first-time visitors', () => {
     render(
       <ThemeProvider>
         <TestComponent />
       </ThemeProvider>
     );
 
-    // Should default to system theme
-    expect(screen.getByTestId('theme')).toHaveTextContent('system');
-    // Resolved theme should be dark (based on our mock)
+    // Should default to dark theme
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
+    // Resolved theme should be dark
     expect(screen.getByTestId('resolved-theme')).toHaveTextContent('dark');
   });
 
@@ -173,7 +173,14 @@ describe('ThemeProvider', () => {
   });
 
   it('should handle invalid saved themes gracefully', () => {
-    localStorageMock.getItem.mockReturnValue('invalid-theme');
+    // Mock localStorage to return an invalid theme
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn(() => 'invalid-theme'),
+        setItem: jest.fn(),
+      },
+      writable: true,
+    });
 
     render(
       <ThemeProvider>
@@ -181,7 +188,7 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
-    // Should fallback to system theme
-    expect(screen.getByTestId('theme')).toHaveTextContent('system');
+    // Should fallback to dark theme
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
   });
 });

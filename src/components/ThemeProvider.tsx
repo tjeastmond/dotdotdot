@@ -43,7 +43,7 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system');
+  const [theme, setTheme] = useState<Theme>('dark');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -51,7 +51,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get saved theme from localStorage
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    let initialTheme: Theme = 'system';
+    let initialTheme: Theme = 'dark';
 
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
       initialTheme = savedTheme;
@@ -61,9 +61,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     // Immediately apply the theme to prevent flash
     if (initialTheme === 'system') {
-      const systemTheme = getSystemTheme();
-      setResolvedTheme(systemTheme);
-      applyTheme(initialTheme);
+      // If system theme is saved, default to dark instead
+      setResolvedTheme('dark');
+      applyTheme('dark');
     } else {
       setResolvedTheme(initialTheme);
       applyTheme(initialTheme);
