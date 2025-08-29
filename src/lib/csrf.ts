@@ -23,7 +23,7 @@ async function generateHMAC(message: string, secret: string): Promise<string> {
     false,
     ['sign']
   );
-  
+
   const signature = await crypto.subtle.sign('HMAC', key, stringToArrayBuffer(message));
   return arrayBufferToHex(signature);
 }

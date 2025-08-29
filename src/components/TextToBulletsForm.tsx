@@ -25,7 +25,7 @@ function LoadingSkeleton() {
       <div className="space-y-4">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Enter your text</h3>
-          <div className="w-full min-h-[200px] p-4 border border-input rounded-md bg-background animate-pulse" />
+          <div className="w-full min-h-[300px] p-4 border border-input rounded-md bg-background animate-pulse" />
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>0 / 1000 characters</span>
           </div>
@@ -281,7 +281,7 @@ export function TextToBulletsForm() {
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Paste your text here... (emails, resumes, job descriptions, etc.)"
-              className="min-h-[200px] resize-none border-border/50 focus:border-primary/50 focus:ring-primary/20"
+              className="min-h-[300px] resize-none border-border/50 focus:border-primary/50 focus:ring-primary/20"
               disabled={loading}
             />
             <CharacterCounter count={input.length} max={MAX_CHARACTERS} truncated={truncated} />
