@@ -1,34 +1,61 @@
-import crypto from 'crypto';
-
 const CSRF_SECRET = process.env.CSRF_SECRET || 'dev-secret-change-in-production';
 
-export function generateCSRFToken(): string {
+// Convert string to ArrayBuffer for Web Crypto API
+function stringToArrayBuffer(str: string): ArrayBuffer {
+  const encoder = new TextEncoder();
+  return encoder.encode(str);
+}
+
+// Convert ArrayBuffer to hex string
+function arrayBufferToHex(buffer: ArrayBuffer): string {
+  const uint8Array = new Uint8Array(buffer);
+  return Array.from(uint8Array)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Generate HMAC using Web Crypto API
+async function generateHMAC(message: string, secret: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    stringToArrayBuffer(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signature = await crypto.subtle.sign('HMAC', key, stringToArrayBuffer(message));
+  return arrayBufferToHex(signature);
+}
+
+// Generate random bytes using Web Crypto API
+function generateRandomBytes(length: number): string {
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return arrayBufferToHex(array.buffer);
+}
+
+export async function generateCSRFToken(): Promise<string> {
   // Use a more deterministic approach for development to reduce hydration issues
   if (process.env.NODE_ENV === 'development') {
     // In development, use a more stable token generation
     const sessionId = process.env.SESSION_ID || 'dev-session';
     const payload = `dev:${sessionId}:${Date.now()}`;
 
-    const hmac = crypto.createHmac('sha256', CSRF_SECRET);
-    hmac.update(payload);
-    const signature = hmac.digest('hex');
-
+    const signature = await generateHMAC(payload, CSRF_SECRET);
     return `${payload}:${signature}`;
   }
 
   // Production: use full security with timestamp and random bytes
   const timestamp = Date.now().toString();
-  const random = crypto.randomBytes(16).toString('hex');
+  const random = generateRandomBytes(16);
   const payload = `${timestamp}:${random}`;
 
-  const hmac = crypto.createHmac('sha256', CSRF_SECRET);
-  hmac.update(payload);
-  const signature = hmac.digest('hex');
-
+  const signature = await generateHMAC(payload, CSRF_SECRET);
   return `${payload}:${signature}`;
 }
 
-export function validateCSRFToken(token: string): boolean {
+export async function validateCSRFToken(token: string): Promise<boolean> {
   if (!token) return false;
 
   try {
@@ -46,11 +73,8 @@ export function validateCSRFToken(token: string): boolean {
       if (now - tokenTime > 5 * 60 * 1000) return false;
 
       // Verify signature
-      const hmac = crypto.createHmac('sha256', CSRF_SECRET);
-      hmac.update(payload);
-      const expectedSignature = hmac.digest('hex');
-
-      return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+      const expectedSignature = await generateHMAC(payload, CSRF_SECRET);
+      return signature === expectedSignature;
     }
 
     // Production token validation
@@ -63,11 +87,8 @@ export function validateCSRFToken(token: string): boolean {
     if (now - tokenTime > 5 * 60 * 1000) return false;
 
     // Verify signature
-    const hmac = crypto.createHmac('sha256', CSRF_SECRET);
-    hmac.update(payload);
-    const expectedSignature = hmac.digest('hex');
-
-    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+    const expectedSignature = await generateHMAC(payload, CSRF_SECRET);
+    return signature === expectedSignature;
   } catch {
     return false;
   }

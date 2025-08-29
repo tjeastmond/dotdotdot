@@ -4,6 +4,8 @@ import { rateLimit } from '@/lib/rateLimit';
 import { cache } from '@/lib/cache';
 import { validateCSRFToken } from '@/lib/csrf';
 
+export const runtime = 'edge';
+
 export async function POST(req: Request) {
   // Security checks
   const origin = req.headers.get('origin');
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
     const { input, csrfToken } = await req.json();
 
     // Validate CSRF token
-    if (!validateCSRFToken(csrfToken)) {
+    if (!(await validateCSRFToken(csrfToken))) {
       return new Response(JSON.stringify({ error: 'Invalid or expired security token' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
