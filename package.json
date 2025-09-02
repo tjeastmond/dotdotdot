@@ -47,6 +47,10 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": "22.18.0"
+    "node": "22"
+  },
+  "overrides": {
+    "glob": "^10.4.5",
+    "inflight": "npm:@isaacs/inflight@^1.0.6"
   }
 }
