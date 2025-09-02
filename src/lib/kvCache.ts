@@ -110,6 +110,7 @@ export class VercelKVCache {
       };
     } catch (error) {
       console.error('Vercel KV cache stats error:', error);
+      // Return default stats when Vercel KV is unavailable (e.g., local development)
       return {
         size: 0,
         maxSize: this.config.maxSize,
