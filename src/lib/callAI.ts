@@ -5,7 +5,7 @@ export async function generateBullets(prompt: string): Promise<AIResponse> {
   console.log('🚀 generateBullets called with prompt length:', prompt.length);
 
   // Check cache first
-  const cachedResult = cache.get(prompt);
+  const cachedResult = await cache.get(prompt);
   if (cachedResult) {
     console.log('📦 Cache hit - returning cached result');
     return {
@@ -115,7 +115,7 @@ ${prompt}`,
       const result = { bullets, truncated: false };
 
       // Cache the successful result
-      cache.set(prompt, bullets, false);
+      await cache.set(prompt, bullets, false);
       console.log('💾 Result cached successfully');
 
       return result;

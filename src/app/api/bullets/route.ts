@@ -5,6 +5,7 @@ import { cache } from '@/lib/cache';
 import { validateCSRFToken } from '@/lib/csrf';
 import { checkInputSecurity, logSecurityEvent, shouldRateLimitByThreats } from '@/lib/security';
 
+// Using Edge Runtime with Vercel KV
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
@@ -72,12 +73,12 @@ export async function POST(req: Request) {
 
     // Comprehensive security check
     const securityResult = checkInputSecurity(input);
-    
+
     // Log security events
     if (securityResult.threats.length > 0) {
       logSecurityEvent('threat', `Threats detected: ${securityResult.threats.join(', ')}`, input, ip);
     }
-    
+
     if (securityResult.warnings.length > 0) {
       logSecurityEvent('warning', `Warnings: ${securityResult.warnings.join(', ')}`, input, ip);
     }
@@ -87,13 +88,16 @@ export async function POST(req: Request) {
       // Additional rate limiting for malicious requests
       if (shouldRateLimitByThreats(securityResult.threats)) {
         logSecurityEvent('blocked', 'Request blocked due to high-risk threats', input, ip);
-        return new Response(JSON.stringify({ 
-          error: 'Request blocked due to security concerns',
-          details: 'Your input contains potentially malicious content that has been blocked.'
-        }), {
-          status: 403,
-          headers: { 'Content-Type': 'application/json' },
-        });
+        return new Response(
+          JSON.stringify({
+            error: 'Request blocked due to security concerns',
+            details: 'Your input contains potentially malicious content that has been blocked.',
+          }),
+          {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
       }
     }
 
@@ -127,11 +131,14 @@ export async function POST(req: Request) {
       originalLength,
       processedLength: cleaned.length,
       cacheStats, // Only included in development
-      securityInfo: process.env.NODE_ENV === 'development' ? {
-        threats: securityResult.threats,
-        warnings: securityResult.warnings,
-        sanitized: securityResult.sanitizedInput !== input
-      } : undefined
+      securityInfo:
+        process.env.NODE_ENV === 'development'
+          ? {
+              threats: securityResult.threats,
+              warnings: securityResult.warnings,
+              sanitized: securityResult.sanitizedInput !== input,
+            }
+          : undefined,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
