@@ -10,29 +10,7 @@ export const runtime = 'edge';
 
 export async function POST(req: Request) {
   // Security checks
-  const origin = req.headers.get('origin');
-  const referer = req.headers.get('referer');
   const contentType = req.headers.get('content-type');
-
-  // Check if request is from our domain or localhost (dev)
-  const allowedOrigins = [process.env.NEXT_PUBLIC_APP_URL, 'http://localhost:3000', 'http://localhost:3001'].filter(
-    Boolean
-  );
-
-  if (origin && !allowedOrigins.includes(origin)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized origin' }), {
-      status: 403,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // Check referer header
-  if (referer && !allowedOrigins.some(allowed => allowed && referer.startsWith(allowed))) {
-    return new Response(JSON.stringify({ error: 'Invalid referer' }), {
-      status: 403,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
 
   // Check content type
   if (!contentType?.includes('application/json')) {
