@@ -11,6 +11,7 @@
     "ENABLE_CACHE": "true",
     "CACHE_TTL": "3600000",
     "CACHE_MAX_SIZE": "1000",
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "GROQ_API_URL": "https://api.groq.com/openai/v1/chat/completions"
   }
 }

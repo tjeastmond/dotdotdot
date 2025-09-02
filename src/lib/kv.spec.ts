@@ -34,7 +34,18 @@ describe('VercelKVService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    // Reset the ping mock to return PONG by default
+    // Reset all mocks to their default successful behavior
+    mockKV.get.mockResolvedValue(null);
+    mockKV.set.mockResolvedValue('OK');
+    mockKV.setex.mockResolvedValue('OK');
+    mockKV.del.mockResolvedValue(1);
+    mockKV.exists.mockResolvedValue(0);
+    mockKV.expire.mockResolvedValue(1);
+    mockKV.incr.mockResolvedValue(1);
+    mockKV.decr.mockResolvedValue(1);
+    mockKV.mget.mockResolvedValue([]);
+    mockKV.mset.mockResolvedValue('OK');
+    mockKV.keys.mockResolvedValue([]);
     mockKV.ping.mockResolvedValue('PONG');
   });
 

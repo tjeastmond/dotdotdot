@@ -1,5 +1,8 @@
 import { AIResponse } from '@/types';
 import { cache } from './cache';
+import { config } from '@/config';
+
+const API_KEY = process.env.GROQ_API_KEY;
 
 export async function generateBullets(prompt: string): Promise<AIResponse> {
   console.log('🚀 generateBullets called with prompt length:', prompt.length);
@@ -52,10 +55,10 @@ ${prompt}`,
 
       console.log('📤 Request body:', JSON.stringify(requestBody, null, 2));
 
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const res = await fetch(config.groq.apiUrl, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          Authorization: `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),

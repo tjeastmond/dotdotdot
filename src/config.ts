@@ -1,4 +1,9 @@
 export const config = {
+  // AI API configuration
+  groq: {
+    apiUrl: process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions',
+  },
+
   // Cache configuration
   cache: {
     enabled: process.env.ENABLE_CACHE === 'true',
