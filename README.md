@@ -57,8 +57,7 @@ The theme toggle is located in the top-right corner of the header and persists y
 
 ```bash
 # AI API Configuration
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-4o-mini
+GROQ_API_KEY=your_groq_api_key_here
 
 # Cache Configuration
 ENABLE_CACHE=true                    # Enable/disable cache (default: false)
@@ -215,4 +214,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Next.js** for the amazing React framework
 - **Tailwind CSS** for the utility-first CSS framework
 - **Lucide** for the beautiful icons
-- **OpenAI** for the AI capabilities
+- **Groq** for the fast AI capabilities
