@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "src/app/api/bullets/route.ts": {
+      "runtime": "edge"
+    },
+    "src/app/api/csrf-token/route.ts": {
+      "runtime": "edge"
+    }
+  },
+  "env": {
+    "ENABLE_CACHE": "true",
+    "CACHE_TTL": "3600000",
+    "CACHE_MAX_SIZE": "1000",
+    "NODE_ENV": "production"
+  }
+}
