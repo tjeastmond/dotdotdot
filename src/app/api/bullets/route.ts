@@ -9,7 +9,7 @@ import { checkInputSecurity, logSecurityEvent, shouldRateLimitByThreats } from '
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  // Security checks
+  // Security checks - CSRF token validation only
   const contentType = req.headers.get('content-type');
 
   // Check content type
