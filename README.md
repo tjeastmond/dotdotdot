@@ -23,8 +23,10 @@
 
 2. **Install dependencies**
 
+   This project uses [pnpm](https://pnpm.io/) as its package manager.
+
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Set up environment variables**
@@ -37,7 +39,7 @@
 4. **Run the development server**
 
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 5. **Open your browser**
@@ -72,16 +74,16 @@ CSRF_SECRET=your_secret_here        # Change in production
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm test:watch
 
 # Run tests with coverage
-npm run test:coverage
+pnpm test:coverage
 
 # Type checking
-npm run type-check
+pnpm type-check
 ```
 
 ## 🏗️ Project Structure
@@ -156,15 +158,15 @@ In development mode, the API returns cache statistics:
 ### Available Scripts
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm test             # Run tests
-npm run test:watch   # Run tests in watch mode
-npm run test:coverage # Run tests with coverage
-npm run type-check   # TypeScript type checking
-npm run format       # Format code with Prettier
-npm run format:check # Check code formatting
+pnpm dev             # Start development server
+pnpm build           # Build for production
+pnpm start           # Start production server
+pnpm test            # Run tests
+pnpm test:watch      # Run tests in watch mode
+pnpm test:coverage   # Run tests with coverage
+pnpm type-check      # TypeScript type checking
+pnpm format          # Format code with Prettier
+pnpm format:check    # Check code formatting
 ```
 
 ### Adding New Features

@@ -7,40 +7,42 @@ DotDotDot is a Next.js 15 application that transforms long text into concise bul
 
 ## Development Commands
 
+**Package Manager**: This project uses [pnpm](https://pnpm.io/). Install dependencies with `pnpm install`.
+
 ### Running the Application
 ```bash
 # Start development server with Turbopack
-npm run dev
+pnpm dev
 
 # Build for production
-npm run build
+pnpm build
 
 # Start production server
-npm start
+pnpm start
 ```
 
 ### Testing
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm test:watch
 
 # Run tests with coverage
-npm run test:coverage
+pnpm test:coverage
 ```
 
 ### Code Quality
 ```bash
 # TypeScript type checking
-npm run type-check
+pnpm type-check
 
 # Format code with Prettier
-npm run format
+pnpm format
 
 # Check formatting without changes
-npm run format:check
+pnpm format:check
 ```
 
 ## Environment Setup
@@ -149,6 +151,7 @@ Uses simple hash function (not crypto hash) for cache keys to maintain Edge Runt
 
 ## Deployment Notes
 - **Platform**: Designed for Vercel
+- **Package Manager**: pnpm (>=8)
 - **Node version**: 22 (see `engines` in package.json)
 - **Vercel KV**: Required for production (cache + rate limiting)
 - **Environment variables**: Must configure all vars from `.env.example`
